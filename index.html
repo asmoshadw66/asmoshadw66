@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ASMODEUS — asmoshadw66</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Cinzel+Decorative:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg:       #03020a;
+  --bg2:      #07041a;
+  --bg3:      #0d0820;
+  --border:   #1e0f38;
+  --border2:  #2d1a50;
+  --p1:       #2d1a50;
+  --p2:       #4a2080;
+  --p3:       #6b35b0;
+  --p4:       #9b72f0;
+  --p5:       #bf94ff;
+  --p6:       #d4b8ff;
+  --acc:      #e040fb;
+  --text:     #c8b8f0;
+  --muted:    #5a4080;
+  --faint:    #2a1a40;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Share Tech Mono', monospace;
+  overflow-x: hidden;
+  cursor: crosshair;
+}
+
+/* ── CANVAS BG ─────────────────────────────── */
+#bg-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ── CUSTOM CURSOR ─────────────────────────── */
+#cursor {
+  position: fixed;
+  width: 20px; height: 20px;
+  border: 1px solid var(--p3);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%,-50%);
+  transition: transform .08s ease, border-color .2s;
+  mix-blend-mode: screen;
+}
+#cursor-dot {
+  position: fixed;
+  width: 4px; height: 4px;
+  background: var(--p4);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%,-50%);
+}
+
+/* ── LAYOUT ────────────────────────────────── */
+.page {
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 28px 100px;
+}
+
+/* ── HERO ──────────────────────────────────── */
+.hero {
+  text-align: center;
+  padding: 70px 0 50px;
+}
+
+/* PENTAGRAM */
+#penta-container {
+  width: 160px; height: 160px;
+  margin: 0 auto 36px;
+  position: relative;
+  perspective: 600px;
+}
+
+#penta-svg {
+  width: 100%; height: 100%;
+  transition: transform .15s ease;
+  will-change: transform;
+}
+
+.ring-outer {
+  animation: rotateRing 20s linear infinite;
+  transform-origin: 80px 80px;
+}
+.ring-mid {
+  animation: rotateRing 13s linear infinite reverse;
+  transform-origin: 80px 80px;
+}
+.ring-inner {
+  animation: rotateRing 8s linear infinite;
+  transform-origin: 80px 80px;
+}
+
+@keyframes rotateRing { to { transform: rotate(360deg); } }
+
+.star-lines { transition: all .3s ease; }
+.penta-glow { transition: opacity .3s ease; opacity: 0.3; }
+
+#penta-container:hover .penta-glow { opacity: 1; }
+#penta-container:hover .ring-outer circle { stroke: var(--p3); }
+#penta-container:hover .star-lines { stroke: var(--p4); }
+#penta-container:hover .center-gem { fill: var(--acc); }
+
+/* runic letters orbit */
+.rune-orbit {
+  animation: rotateRing 40s linear infinite reverse;
+  transform-origin: 80px 80px;
+}
+
+.hero-name {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 52px;
+  font-weight: 700;
+  color: var(--p5);
+  letter-spacing: .18em;
+  line-height: 1;
+  transition: color .3s;
+}
+.hero-name:hover { color: var(--acc); }
+
+.hero-pseudo {
+  font-size: 11px;
+  color: var(--p2);
+  letter-spacing: .4em;
+  margin-top: 10px;
+  text-transform: uppercase;
+}
+
+.hero-loc {
+  font-size: 11px;
+  color: var(--faint);
+  letter-spacing: .3em;
+  margin-top: 6px;
+}
+
+.hero-tagline {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 22px;
+  line-height: 1.9;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+  animation: fadeUp .9s .4s both;
+}
+
+@keyframes fadeUp {
+  from { opacity:0; transform: translateY(16px); }
+  to   { opacity:1; transform: translateY(0); }
+}
+
+/* ── RUNE DIVIDER ──────────────────────────── */
+.rune-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 36px 0;
+}
+.rune-divider .line {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.rune-divider .sym {
+  font-size: 12px;
+  color: var(--p2);
+  letter-spacing: .2em;
+}
+
+/* ── SECTION TITLE ─────────────────────────── */
+.sec-title {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: .45em;
+  color: var(--p2);
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.sec-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--border), transparent);
+}
+
+/* ── SPELL BLOCK (code) ────────────────────── */
+.spell-block {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-left: 2px solid var(--p2);
+  border-radius: 4px;
+  padding: 22px 26px;
+  font-size: 13px;
+  line-height: 2;
+  margin-bottom: 12px;
+  transition: border-color .3s;
+}
+.spell-block:hover {
+  border-color: var(--p3);
+  border-left-color: var(--p4);
+}
+.kw   { color: var(--p4); }
+.str  { color: #a0d090; }
+.key  { color: var(--p5); }
+.val  { color: #d4a0ff; }
+.cm   { color: var(--faint); }
+.pun  { color: var(--muted); }
+
+/* ── SKILLS ────────────────────────────────── */
+.skills-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-bottom: 8px;
+}
+.skill {
+  padding: 6px 15px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  font-size: 11px;
+  letter-spacing: .08em;
+  color: var(--muted);
+  background: var(--bg2);
+  cursor: default;
+  transition: all .2s ease;
+  position: relative;
+  overflow: hidden;
+}
+.skill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--p2);
+  opacity: 0;
+  transition: opacity .2s;
+}
+.skill:hover {
+  border-color: var(--p3);
+  color: var(--p6);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(107,53,176,.2);
+}
+.skill:hover::after { opacity: .08; }
+
+/* ── PROJECTS ──────────────────────────────── */
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.proj-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 22px;
+  cursor: pointer;
+  transition: all .25s ease;
+  position: relative;
+  overflow: hidden;
+}
+.proj-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: var(--border2);
+  transition: background .25s;
+}
+.proj-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 20px; right: 20px;
+  height: 1px;
+  background: transparent;
+  transition: background .25s;
+}
+.proj-card:hover {
+  border-color: var(--p2);
+  background: var(--bg3);
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px rgba(74,32,128,.2);
+}
+.proj-card:hover::before { background: var(--p3); }
+.proj-card:hover::after  { background: var(--p2); }
+
+.proj-sigil {
+  width: 32px; height: 32px;
+  margin-bottom: 14px;
+}
+.proj-name {
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  color: var(--p4);
+  letter-spacing: .05em;
+  margin-bottom: 8px;
+  transition: color .2s;
+}
+.proj-card:hover .proj-name { color: var(--p6); }
+.proj-desc {
+  font-size: 11px;
+  color: var(--faint);
+  line-height: 1.8;
+  margin-bottom: 14px;
+  transition: color .2s;
+}
+.proj-card:hover .proj-desc { color: var(--muted); }
+.proj-tags {
+  display: flex; flex-wrap: wrap; gap: 6px;
+}
+.ptag {
+  font-size: 9px;
+  padding: 2px 8px;
+  border: 1px solid var(--border);
+  color: var(--p2);
+  border-radius: 1px;
+  letter-spacing: .05em;
+  transition: all .2s;
+}
+.proj-card:hover .ptag {
+  border-color: var(--border2);
+  color: var(--p3);
+}
+
+/* ── CONTRIB ───────────────────────────────── */
+#contrib-canvas {
+  width: 100%;
+  height: 100px;
+  display: block;
+  border-radius: 3px;
+  cursor: crosshair;
+}
+
+/* ── TERMINAL ──────────────────────────────── */
+.terminal {
+  background: #020109;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 20px 24px;
+  font-size: 12px;
+  line-height: 2;
+}
+.term-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.tdot { width: 11px; height: 11px; border-radius: 50%; }
+.tdot.r { background: #1e0a0a; }
+.tdot.y { background: #1a1608; }
+.tdot.g { background: #081508; }
+.term-title { font-size: 10px; color: var(--faint); letter-spacing: .2em; margin-left: 4px; }
+.tl  { color: var(--p2); }
+.tc  { color: var(--p4); }
+.to  { color: #80a880; }
+.tcm { color: var(--faint); }
+.cursor-blink {
+  display: inline-block;
+  width: 7px; height: 13px;
+  background: var(--p3);
+  vertical-align: middle;
+  animation: blink 1.1s infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+/* ── STATS ─────────────────────────────────── */
+.stats-row {
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+.stat-item {
+  flex: 1;
+  text-align: center;
+  padding: 18px 12px;
+  border-right: 1px solid var(--border);
+  transition: background .2s;
+  cursor: default;
+}
+.stat-item:last-child { border-right: none; }
+.stat-item:hover { background: var(--bg3); }
+.stat-num {
+  font-family: 'Cinzel', serif;
+  font-size: 22px;
+  color: var(--p4);
+  display: block;
+  transition: color .2s;
+}
+.stat-item:hover .stat-num { color: var(--acc); }
+.stat-lbl {
+  font-size: 9px;
+  color: var(--faint);
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  margin-top: 4px;
+  display: block;
+}
+
+/* ── CONTACT ───────────────────────────────── */
+.contact-wrap {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.c-btn {
+  padding: 10px 24px;
+  border: 1px solid var(--border2);
+  background: transparent;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 2px;
+  text-decoration: none;
+  display: inline-block;
+  transition: all .25s ease;
+  position: relative;
+  overflow: hidden;
+}
+.c-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--p2);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .3s ease;
+  z-index: -1;
+}
+.c-btn:hover::before { transform: scaleX(1); }
+.c-btn:hover {
+  border-color: var(--p3);
+  color: var(--p6);
+}
+
+/* ── FOOTER ────────────────────────────────── */
+.footer {
+  text-align: center;
+  font-size: 10px;
+  color: var(--border2);
+  letter-spacing: .3em;
+  margin-top: 70px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+
+/* ── SCROLL REVEAL ─────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity .7s ease, transform .7s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+<div id="cursor"></div>
+<div id="cursor-dot"></div>
+
+<div class="page">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div id="penta-container">
+      <svg id="penta-svg" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="glow-soft">
+            <feGaussianBlur stdDeviation="3" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+        <!-- outer ring with tick marks -->
+        <g class="ring-outer">
+          <circle cx="80" cy="80" r="75" fill="none" stroke="#1a0930" stroke-width="1"/>
+          <circle cx="80" cy="5"  r="2.5" fill="#2d1a50"/>
+          <circle cx="80" cy="155" r="2.5" fill="#2d1a50"/>
+          <circle cx="5"  cy="80" r="2.5" fill="#2d1a50"/>
+          <circle cx="155" cy="80" r="2.5" fill="#2d1a50"/>
+          <circle cx="21.7" cy="21.7" r="2" fill="#2d1a50"/>
+          <circle cx="138.3" cy="21.7" r="2" fill="#2d1a50"/>
+          <circle cx="21.7" cy="138.3" r="2" fill="#2d1a50"/>
+          <circle cx="138.3" cy="138.3" r="2" fill="#2d1a50"/>
+        </g>
+
+        <!-- middle ring dashed -->
+        <g class="ring-mid">
+          <circle cx="80" cy="80" r="58" fill="none" stroke="#150a28" stroke-width="0.8" stroke-dasharray="4 6"/>
+        </g>
+
+        <!-- pentagram star -->
+        <g class="star-lines" filter="url(#glow-soft)">
+          <!-- 5-pointed star lines -->
+          <polygon points="80,18 94,58 136,58 103,82 115,122 80,98 45,122 57,82 24,58 66,58"
+            fill="#050310" stroke="#1e0f38" stroke-width="1"/>
+          <!-- internal lines -->
+          <line x1="80" y1="18" x2="103" y2="82" stroke="#150828" stroke-width="0.7"/>
+          <line x1="80" y1="18" x2="57"  y2="82" stroke="#150828" stroke-width="0.7"/>
+          <line x1="136" y1="58" x2="45" y2="122" stroke="#150828" stroke-width="0.7"/>
+          <line x1="24"  y1="58" x2="115" y2="122" stroke="#150828" stroke-width="0.7"/>
+          <line x1="136" y1="58" x2="24"  y2="58"  stroke="#150828" stroke-width="0.7"/>
+        </g>
+
+        <!-- glow overlay on hover -->
+        <polygon class="penta-glow" points="80,18 94,58 136,58 103,82 115,122 80,98 45,122 57,82 24,58 66,58"
+          fill="none" stroke="#6b35b0" stroke-width="1.5"/>
+
+        <!-- inner circle -->
+        <circle cx="80" cy="80" r="14" fill="#07041a" stroke="#1a0930" stroke-width="1"/>
+
+        <!-- runic orbit text -->
+        <g class="rune-orbit">
+          <text font-family="serif" font-size="8" fill="#1e0f38" text-anchor="middle">
+            <textPath href="#orbit-path" startOffset="0%">ᚨ ᛋ ᛗ ᛟ ᛞ ᛖ ᚢ ᛋ · ᚨ ᛋ ᛗ ᛟ ᛞ ᛖ ᚢ ᛋ ·</textPath>
+          </text>
+          <path id="orbit-path" d="M80,80 m-46,0 a46,46 0 1,1 92,0 a46,46 0 1,1 -92,0" fill="none"/>
+        </g>
+
+        <!-- center gem -->
+        <circle class="center-gem" cx="80" cy="80" r="5" fill="#2d1a50" stroke="#3a1860" stroke-width="1"
+          style="transition: fill .3s ease;"/>
+      </svg>
+    </div>
+
+    <div class="hero-name">ASMODEUS</div>
+    <div class="hero-pseudo">asmoshadw66</div>
+    <div class="hero-loc">⬡ Burkina Faso, West Africa ⬡</div>
+    <div class="hero-tagline">
+      Weaving dark logic into elegant systems.<br>
+      Summoning applications from the void —<br>
+      one commit at a time.
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="reveal">
+    <div class="stats-row">
+      <div class="stat-item">
+        <span class="stat-num" data-target="247">0</span>
+        <span class="stat-lbl">Commits</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num" data-target="12">0</span>
+        <span class="stat-lbl">Projects</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num" data-target="8">0</span>
+        <span class="stat-lbl">Languages</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num" data-target="34">0</span>
+        <span class="stat-lbl">Stars</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="rune-divider reveal">
+    <div class="line"></div>
+    <div class="sym">ᚨ · ᛋ · ᛗ · ᛟ</div>
+    <div class="line"></div>
+  </div>
+
+  <!-- SPELL BLOCK -->
+  <div class="reveal">
+    <div class="sec-title">Incantation</div>
+    <div class="spell-block">
+<span class="kw">class</span> <span class="key">Asmodeus</span><span class="pun">:</span>
+  <span class="cm"># identity</span>
+  <span class="key">alias</span>    <span class="pun">=</span> <span class="str">"asmoshadw66"</span>
+  <span class="key">location</span> <span class="pun">=</span> <span class="str">"Burkina Faso, West Africa"</span>
+  <span class="key">studies</span>  <span class="pun">=</span> <span class="str">"Licence Informatique @ BIT (2026)"</span>
+
+  <span class="cm"># grimoire</span>
+  <span class="key">languages</span>  <span class="pun">=</span> <span class="pun">[</span><span class="str">"Python"</span><span class="pun">,</span> <span class="str">"JavaScript"</span><span class="pun">,</span> <span class="str">"C"</span><span class="pun">,</span> <span class="str">"Bash"</span><span class="pun">,</span> <span class="str">"HTML/CSS"</span><span class="pun">]</span>
+  <span class="key">frameworks</span> <span class="pun">=</span> <span class="pun">[</span><span class="str">"Django"</span><span class="pun">,</span> <span class="str">"Vue.js"</span><span class="pun">,</span> <span class="str">"Node.js"</span><span class="pun">,</span> <span class="str">"TensorFlow"</span><span class="pun">]</span>
+  <span class="key">network</span>    <span class="pun">=</span> <span class="pun">[</span><span class="str">"OSPF"</span><span class="pun">,</span> <span class="str">"BGP"</span><span class="pun">,</span> <span class="str">"VLAN"</span><span class="pun">,</span> <span class="str">"Cisco PT"</span><span class="pun">]</span>
+  <span class="key">ml</span>         <span class="pun">=</span> <span class="pun">[</span><span class="str">"Machine Learning"</span><span class="pun">,</span> <span class="str">"Deep Learning"</span><span class="pun">]</span>
+    </div>
+  </div>
+
+  <div class="rune-divider reveal">
+    <div class="line"></div>
+    <div class="sym">ᛞ · ᛖ · ᚢ · ᛋ</div>
+    <div class="line"></div>
+  </div>
+
+  <!-- SKILLS -->
+  <div class="reveal">
+    <div class="sec-title">Arsenal</div>
+    <div class="skills-grid" id="skills-grid"></div>
+  </div>
+
+  <div class="rune-divider reveal">
+    <div class="line"></div>
+    <div class="sym">ᚨ · ᛋ · ᛗ · ᛟ</div>
+    <div class="line"></div>
+  </div>
+
+  <!-- PROJECTS -->
+  <div class="reveal">
+    <div class="sec-title">Grimoire of Projects</div>
+    <div class="projects-grid" id="projects-grid"></div>
+  </div>
+
+  <div class="rune-divider reveal">
+    <div class="line"></div>
+    <div class="sym">ᛞ · ᛖ · ᚢ · ᛋ</div>
+    <div class="line"></div>
+  </div>
+
+  <!-- CONTRIB -->
+  <div class="reveal">
+    <div class="sec-title">Dark Energy Flux</div>
+    <canvas id="contrib-canvas"></canvas>
+  </div>
+
+  <div class="rune-divider reveal">
+    <div class="line"></div>
+    <div class="sym">ᚨ · ᛋ · ᛗ · ᛟ</div>
+    <div class="line"></div>
+  </div>
+
+  <!-- TERMINAL -->
+  <div class="reveal">
+    <div class="sec-title">Incantation Terminal</div>
+    <div class="terminal">
+      <div class="term-bar">
+        <div class="tdot r"></div>
+        <div class="tdot y"></div>
+        <div class="tdot g"></div>
+        <span class="term-title">asmoshadw66 ~ shadow-shell v6.6</span>
+      </div>
+      <div id="term-out"></div>
+    </div>
+  </div>
+
+  <div class="rune-divider reveal">
+    <div class="line"></div>
+    <div class="sym">ᛞ · ᛖ · ᚢ · ᛋ</div>
+    <div class="line"></div>
+  </div>
+
+  <!-- CONTACT -->
+  <div class="reveal" style="text-align:center">
+    <div class="sec-title" style="justify-content:center">Summon Me</div>
+    <div class="contact-wrap">
+      <a class="c-btn" href="mailto:hienstephane9@gmail.com">✉ Contact</a>
+      <a class="c-btn" href="https://github.com/asmoshadw66" target="_blank">⬡ GitHub</a>
+    </div>
+  </div>
+
+  <div class="footer">
+    ⬡ &nbsp; asmoshadw66 &nbsp; · &nbsp; Burkina Faso &nbsp; · &nbsp; West Africa &nbsp; ⬡
+  </div>
+
+</div><!-- /page -->
+
+<script>
+// ── CURSOR ────────────────────────────────────
+const cur = document.getElementById('cursor');
+const dot = document.getElementById('cursor-dot');
+document.addEventListener('mousemove', e => {
+  cur.style.left = e.clientX + 'px';
+  cur.style.top  = e.clientY + 'px';
+  dot.style.left = e.clientX + 'px';
+  dot.style.top  = e.clientY + 'px';
+});
+document.querySelectorAll('a,button,.skill,.proj-card,.stat-item').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    cur.style.transform = 'translate(-50%,-50%) scale(1.8)';
+    cur.style.borderColor = '#9b72f0';
+  });
+  el.addEventListener('mouseleave', () => {
+    cur.style.transform = 'translate(-50%,-50%) scale(1)';
+    cur.style.borderColor = '#4a2080';
+  });
+});
+
+// ── BG PARTICLE NETWORK ───────────────────────
+const bgC = document.getElementById('bg-canvas');
+const bgX = bgC.getContext('2d');
+let W, H, pts = [];
+
+function resize() {
+  W = bgC.width  = window.innerWidth;
+  H = bgC.height = window.innerHeight;
+}
+
+function mkPt() {
+  return {
+    x: Math.random() * W, y: Math.random() * H,
+    vx: (Math.random()-.5)*.25, vy: (Math.random()-.5)*.25,
+    r: Math.random()*1.2+.3,
+    a: Math.random()*.5+.1,
+    c: ['#2d1a50','#3a1860','#4a2080','#1a0930'][Math.floor(Math.random()*4)]
+  };
+}
+
+function drawBg() {
+  bgX.clearRect(0,0,W,H);
+  pts.forEach(p => {
+    p.x += p.vx; p.y += p.vy;
+    if (p.x<0) p.x=W; if (p.x>W) p.x=0;
+    if (p.y<0) p.y=H; if (p.y>H) p.y=0;
+    bgX.beginPath();
+    bgX.arc(p.x, p.y, p.r, 0, Math.PI*2);
+    bgX.fillStyle = p.c;
+    bgX.globalAlpha = p.a;
+    bgX.fill();
+  });
+  bgX.globalAlpha = 1;
+  for (let i=0;i<pts.length;i++) {
+    for (let j=i+1;j<pts.length;j++) {
+      const dx=pts[i].x-pts[j].x, dy=pts[i].y-pts[j].y;
+      const d=Math.sqrt(dx*dx+dy*dy);
+      if (d<100) {
+        bgX.beginPath();
+        bgX.moveTo(pts[i].x,pts[i].y);
+        bgX.lineTo(pts[j].x,pts[j].y);
+        bgX.strokeStyle='#1a0930';
+        bgX.globalAlpha=(1-d/100)*.2;
+        bgX.lineWidth=.5;
+        bgX.stroke();
+      }
+    }
+  }
+  bgX.globalAlpha=1;
+  requestAnimationFrame(drawBg);
+}
+
+resize();
+pts = Array.from({length:90}, mkPt);
+drawBg();
+window.addEventListener('resize', () => { resize(); pts=Array.from({length:90},mkPt); });
+
+// ── PENTAGRAM MOUSE 3D TILT ───────────────────
+const pc = document.getElementById('penta-container');
+const ps = document.getElementById('penta-svg');
+pc.addEventListener('mousemove', e => {
+  const r = pc.getBoundingClientRect();
+  const x = (e.clientX - r.left - 80) / 80;
+  const y = (e.clientY - r.top  - 80) / 80;
+  ps.style.transform = `rotateY(${x*18}deg) rotateX(${-y*18}deg) scale(1.05)`;
+});
+pc.addEventListener('mouseleave', () => {
+  ps.style.transform = '';
+});
+
+// ── SKILLS ────────────────────────────────────
+const skills = [
+  'Python','JavaScript','C','Bash','HTML / CSS',
+  'Django','Vue.js','Node.js','TensorFlow','PyTorch',
+  'Linux CLI','Git','REST APIs','PostgreSQL','SQLite',
+  'OSPF','BGP','Cisco Packet Tracer','VLAN',
+  'Machine Learning','Deep Learning','Agile'
+];
+const sg = document.getElementById('skills-grid');
+skills.forEach(s => {
+  const d = document.createElement('div');
+  d.className = 'skill'; d.textContent = s;
+  sg.appendChild(d);
+});
+
+// ── PROJECTS ──────────────────────────────────
+const projects = [
+  {
+    title:'Django Forge',
+    desc:'Full-stack task manager with auth, CRUD ops, PostgreSQL/SQLite and responsive design.',
+    tags:['Django','Python','MariaDB','HTML/CSS'],
+    svgD:'M8,2 L14,10 8,18 2,10 Z M8,5 L11,10 8,15 5,10 Z'
+  },
+  {
+    title:'Vue Nexus',
+    desc:'Dynamic Vue.js frontend connected to a RESTful Node.js backend with real-time data.',
+    tags:['Vue.js','Node.js','JavaScript','REST API'],
+    svgD:'M8,1 L15,4 15,12 8,15 1,12 1,4 Z M8,4 L12,6 12,11 8,13 4,11 4,6 Z'
+  },
+  {
+    title:'Network Citadel',
+    desc:'Enterprise OSPF/BGP routing, VLANs, security — designed in Cisco Packet Tracer.',
+    tags:['OSPF','BGP','Cisco PT','VLAN'],
+    svgD:'M8,1 L15,8 8,15 1,8 Z M8,4 L12,8 8,12 4,8 Z M8,6 L10,8 8,10 6,8 Z'
+  }
+];
+const pg = document.getElementById('projects-grid');
+projects.forEach(p => {
+  const c = document.createElement('div');
+  c.className = 'proj-card';
+  c.innerHTML = `
+    <svg class="proj-sigil" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+      <path d="${p.svgD}" fill="none" stroke="#2d1a50" stroke-width="1"/>
+    </svg>
+    <div class="proj-name">${p.title}</div>
+    <div class="proj-desc">${p.desc}</div>
+    <div class="proj-tags">${p.tags.map(t=>`<span class="ptag">${t}</span>`).join('')}</div>
+  `;
+  pg.appendChild(c);
+});
+
+// ── CONTRIB GRAPH ─────────────────────────────
+const cc  = document.getElementById('contrib-canvas');
+const ccx = cc.getContext('2d');
+const CW=52, CH=7;
+let cdata=[];
+
+function genContrib() {
+  cdata=[];
+  for(let w=0;w<CW;w++){cdata[w]=[];for(let d=0;d<CH;d++){const v=Math.random();cdata[w][d]=v<.4?0:v<.65?1:v<.82?2:v<.93?3:4;}}
+}
+const cols=['#0a0515','#1e0f38','#3a1860','#6b35b0','#9b72f0'];
+function drawContrib(hx,hy){
+  const dpr=window.devicePixelRatio||1;
+  const cw=cc.offsetWidth||800; const ch=100;
+  cc.width=cw*dpr; cc.height=ch*dpr; ccx.scale(dpr,dpr);
+  const cw2=(cw-20)/CW; const ch2=(ch-16)/CH; const pad=2;
+  for(let w=0;w<CW;w++) for(let d=0;d<CH;d++){
+    const x=10+w*cw2; const y=8+d*ch2;
+    ccx.fillStyle=cols[cdata[w][d]];
+    ccx.beginPath(); ccx.roundRect(x+pad/2,y+pad/2,cw2-pad,ch2-pad,2); ccx.fill();
+    if(w===hx&&d===hy){
+      ccx.fillStyle='rgba(155,114,240,.4)';
+      ccx.beginPath(); ccx.roundRect(x+pad/2,y+pad/2,cw2-pad,ch2-pad,2); ccx.fill();
+    }
+  }
+}
+genContrib(); setTimeout(()=>drawContrib(-1,-1),80);
+window.addEventListener('resize',()=>drawContrib(-1,-1));
+cc.addEventListener('mousemove',e=>{
+  const r=cc.getBoundingClientRect();
+  const cw=cc.offsetWidth||800;
+  const cw2=(cw-20)/CW; const ch2=84/CH;
+  const wx=Math.floor((e.clientX-r.left-10)/cw2);
+  const wy=Math.floor((e.clientY-r.top-8)/ch2);
+  drawContrib(wx>=0&&wx<CW?wx:-1,wy>=0&&wy<CH?wy:-1);
+});
+cc.addEventListener('mouseleave',()=>drawContrib(-1,-1));
+
+// ── TERMINAL ──────────────────────────────────
+const termLines = [
+  {cls:'tcm', txt:'# shadow-shell v6.6 — invoking profile...', d:300},
+  {cls:'tl',  txt:'$ whoami',                                   d:900},
+  {cls:'to',  txt:'→ asmoshadw66 :: full-stack · ml · network', d:1200},
+  {cls:'tl',  txt:'$ cat stack.json',                           d:1700},
+  {cls:'to',  txt:'→ python · django · vue.js · node.js · tensorflow', d:2000},
+  {cls:'tl',  txt:'$ git log --oneline -3',                     d:2500},
+  {cls:'to',  txt:'→ a3f8c2d  feat: vue+node real-time sync',   d:2800},
+  {cls:'to',  txt:'→ 7b1e940  feat: django auth & postgresql',  d:3000},
+  {cls:'to',  txt:'→ 2c9d3f1  cfg: ospf/bgp routing',          d:3200},
+  {cls:'tl',  txt:'$ location',                                  d:3700},
+  {cls:'to',  txt:'→ Burkina Faso, West Africa 🌍',             d:4000},
+  {cls:'tl',  txt:'$ status',                                    d:4400},
+  {cls:'to',  txt:'→ systems nominal. darkness sustained.',      d:4700},
+];
+const tout = document.getElementById('term-out');
+termLines.forEach(({cls,txt,d})=>{
+  setTimeout(()=>{
+    const el=document.createElement('div'); el.className=cls; tout.appendChild(el);
+    let i=0;
+    const iv=setInterval(()=>{el.textContent=txt.slice(0,++i);if(i>=txt.length)clearInterval(iv);},18);
+  },d);
+});
+setTimeout(()=>{
+  const c=document.createElement('span'); c.className='cursor-blink'; tout.appendChild(c);
+},5200);
+
+// ── COUNTERS ──────────────────────────────────
+function animCount(el,target){
+  const dur=1800; const t0=performance.now();
+  function step(now){
+    const p=Math.min((now-t0)/dur,1);
+    const e=1-Math.pow(1-p,3);
+    el.textContent=Math.floor(e*target);
+    if(p<1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+// ── SCROLL REVEAL ─────────────────────────────
+let countersStarted=false;
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(en=>{
+    if(en.isIntersecting){
+      en.target.classList.add('visible');
+      if(!countersStarted){
+        countersStarted=true;
+        document.querySelectorAll('.stat-num[data-target]').forEach(el=>{
+          animCount(el, parseInt(el.dataset.target));
+        });
+      }
+    }
+  });
+},{threshold:.15});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+</script>
+</body>
+</html>
